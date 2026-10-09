@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Photoshop Lite — PsL</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="app">
+  <!-- Top bar -->
+  <header id="topbar">
+    <div class="logo"><span class="logo-ps">Ps</span><span class="logo-lite">Lite</span></div>
+    <nav id="menubar">
+      <div class="menu" data-menu="file"><span>File</span>
+        <div class="dropdown">
+          <button data-act="new">New… <kbd>Ctrl+N</kbd></button>
+          <button data-act="open">Open image… <kbd>Ctrl+O</kbd></button>
+          <button data-act="place">Place image as layer</button>
+          <hr>
+          <button data-act="export-png">Export as PNG</button>
+          <button data-act="export-jpg">Export as JPG</button>
+          <button data-act="export-webp">Export as WebP</button>
+          <hr>
+          <button data-act="download-project">Save project (.json)</button>
+          <button data-act="load-project">Load project (.json)</button>
+        </div>
+      </div>
+      <div class="menu" data-menu="edit"><span>Edit</span>
+        <div class="dropdown">
+          <button data-act="undo">Undo <kbd>Ctrl+Z</kbd></button>
+          <button data-act="redo">Redo <kbd>Ctrl+Y</kbd></button>
+          <hr>
+          <button data-act="cut">Cut <kbd>Ctrl+X</kbd></button>
+          <button data-act="copy">Copy <kbd>Ctrl+C</kbd></button>
+          <button data-act="paste">Paste <kbd>Ctrl+V</kbd></button>
+          <button data-act="deselect">Deselect <kbd>Ctrl+D</kbd></button>
+          <button data-act="select-all">Select all <kbd>Ctrl+A</kbd></button>
+          <hr>
+          <button data-act="fill-fg">Fill selection w/ foreground</button>
+          <button data-act="clear">Delete / Clear <kbd>Del</kbd></button>
+        </div>
+      </div>
+      <div class="menu" data-menu="image"><span>Image</span>
+        <div class="dropdown">
+          <button data-act="resize-canvas">Canvas size…</button>
+          <button data-act="fit-image">Fit image to canvas</button>
+          <button data-act="rotate-90">Rotate canvas 90° CW</button>
+          <button data-act="rotate-90-ccw">Rotate canvas 90° CCW</button>
+          <button data-act="flip-h-canvas">Flip canvas horizontal</button>
+          <button data-act="flip-v-canvas">Flip canvas vertical</button>
+        </div>
+      </div>
+      <div class="menu" data-menu="layer"><span>Layer</span>
+        <div class="dropdown">
+          <button data-act="layer-new">New layer <kbd>Shift+Ctrl+N</kbd></button>
+          <button data-act="layer-dup">Duplicate layer</button>
+          <button data-act="layer-delete">Delete layer</button>
+          <button data-act="layer-merge">Merge down <kbd>Ctrl+E</kbd></button>
+          <button data-act="layer-flatten">Flatten image</button>
+          <hr>
+          <button data-act="layer-flip-h">Flip layer horizontal</button>
+          <button data-act="layer-flip-v">Flip layer vertical</button>
+          <button data-act="layer-rot-90">Rotate layer 90° CW</button>
+          <button data-act="layer-rot-180">Rotate layer 180°</button>
+        </div>
+      </div>
+      <div class="menu" data-menu="filter"><span>Filter</span>
+        <div class="dropdown">
+          <button data-act="f-gray">Grayscale</button>
+          <button data-act="f-invert">Invert</button>
+          <button data-act="f-sepia">Sepia</button>
+          <button data-act="f-threshold">Threshold</button>
+          <button data-act="f-blur">Gaussian blur</button>
+          <button data-act="f-sharpen">Sharpen</button>
+          <button data-act="f-emboss">Emboss</button>
+          <button data-act="f-vignette">Vignette</button>
+        </div>
+      </div>
+      <div class="menu" data-menu="view"><span>View</span>
+        <div class="dropdown">
+          <button data-act="zoom-in">Zoom in <kbd>Ctrl++</kbd></button>
+          <button data-act="zoom-out">Zoom out <kbd>Ctrl+-</kbd></button>
+          <button data-act="zoom-100">Actual pixels <kbd>Ctrl+1</kbd></button>
+          <button data-act="zoom-fit">Fit on screen <kbd>Ctrl+0</kbd></button>
+          <button data-act="toggle-grid">Toggle grid <kbd>'</kbd></button>
+          <button data-act="toggle-rulers">Toggle rulers</button>
+        </div>
+      </div>
+    </nav>
+    <div id="quickbar">
+      <button data-act="new" title="New (Ctrl+N)">＋ New</button>
+      <button data-act="open" title="Open (Ctrl+O)">⤴ Open</button>
+      <button data-act="export-png" title="Export PNG">⬇ Export</button>
+      <span class="sep"></span>
+      <button data-act="undo" title="Undo (Ctrl+Z)">↩</button>
+      <button data-act="redo" title="Redo (Ctrl+Y)">↪</button>
+      <span class="sep"></span>
+      <button data-act="zoom-out">−</button>
+      <span id="zoom-label">100%</span>
+      <button data-act="zoom-in">＋</button>
+      <button data-act="zoom-fit" title="Fit (Ctrl+0)">Fit</button>
+    </div>
+  </header>
+
+  <div id="workbench">
+    <!-- Left toolbar -->
+    <aside id="toolbar">
+      <button class="tool active" data-tool="move" title="Move (V)">✥<label>Move</label></button>
+      <button class="tool" data-tool="select" title="Rect select (M)">▭<label>Select</label></button>
+      <button class="tool" data-tool="brush" title="Brush (B)">🖌<label>Brush</label></button>
+      <button class="tool" data-tool="eraser" title="Eraser (E)">🧽<label>Eraser</label></button>
+      <button class="tool" data-tool="fill" title="Paint bucket (G)">🪣<label>Fill</label></button>
+      <button class="tool" data-tool="gradient" title="Gradient (Shift+G)">🌈<label>Grad</label></button>
+      <button class="tool" data-tool="eyedropper" title="Eyedropper (I)">💧<label>Pick</label></button>
+      <button class="tool" data-tool="text" title="Text (T)">T<label>Text</label></button>
+      <button class="tool" data-tool="shape-rect" title="Rectangle (U)">▢<label>Rect</label></button>
+      <button class="tool" data-tool="shape-ellipse" title="Ellipse (Shift+U)">◯<label>Ellipse</label></button>
+      <button class="tool" data-tool="shape-line" title="Line">╱<label>Line</label></button>
+      <button class="tool" data-tool="crop" title="Crop (C)">✂<label>Crop</label></button>
+      <button class="tool" data-tool="hand" title="Hand (H)">✋<label>Hand</label></button>
+      <button class="tool" data-tool="zoom" title="Zoom (Z)">🔍<label>Zoom</label></button>
+    </aside>
+
+    <!-- Options bar -->
+    <div id="midcol">
+      <div id="optionsbar">
+        <span id="tool-name">Move</span>
+        <span id="tool-options"></span>
+      </div>
+      <div id="canvas-wrap">
+        <div id="ruler-top"><canvas id="rulerH" height="18"></canvas></div>
+        <div id="canvas-row">
+          <div id="ruler-left"><canvas id="rulerV" width="18"></canvas></div>
+          <div id="scroll-area">
+            <div id="canvas-holder">
+              <canvas id="main"></canvas>
+              <canvas id="overlay"></canvas>
+              <div id="text-editor" class="hidden"><textarea id="text-input" placeholder="Type then Enter to commit, Esc to cancel"></textarea><div class="hint">Enter ↵ commit · Esc cancel</div></div>
+            </div>
+          </div>
+        </div>
+        <div id="statusbar">
+          <span id="stat-doc">No document</span>
+          <span id="stat-pos">x: — y: —</span>
+          <span id="stat-sel"></span>
+          <span id="stat-hint">Drag & drop an image anywhere to open · Space+drag to pan · Ctrl+wheel to zoom</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right panels -->
+    <aside id="sidebar">
+      <section class="panel" id="panel-color">
+        <h3>Color & Brush</h3>
+        <div class="colors">
+          <div id="fg-swatch" title="Foreground — click to change"></div>
+          <div id="bg-swatch" title="Background — click to change"></div>
+          <button id="swap-colors" title="Swap (X)">⇄</button>
+          <input type="color" id="fg-picker" value="#ff3b30" />
+          <input type="color" id="bg-picker" value="#ffffff" />
+        </div>
+        <div class="row"><label>Hex</label><input id="hex-input" value="#ff3b30" spellcheck="false" /></div>
+        <div class="swatches" id="swatches"></div>
+        <div class="row"><label>Size <span id="brush-size-val">12</span>px</label><input type="range" id="brush-size" min="1" max="200" value="12" /></div>
+        <div class="row"><label>Opacity <span id="brush-op-val">100</span>%</label><input type="range" id="brush-opacity" min="1" max="100" value="100" /></div>
+        <div class="row"><label>Hardness <span id="brush-hard-val">100</span>%</label><input type="range" id="brush-hardness" min="1" max="100" value="100" /></div>
+        <div class="row"><label>Tolerance <span id="fill-tol-val">32</span></label><input type="range" id="fill-tolerance" min="0" max="128" value="32" /></div>
+        <div class="row two">
+          <label>Font <select id="font-face">
+            <option>Arial</option><option>Helvetica</option><option>Georgia</option>
+            <option>Times New Roman</option><option>Courier New</option><option>Verdana</option>
+            <option>Impact</option><option>Comic Sans MS</option>
+          </select></label>
+          <label>Px <input type="number" id="font-size" value="48" min="6" max="500" /></label>
+        </div>
+        <div class="row two">
+          <label><input type="checkbox" id="shape-fill" checked /> Fill shape</label>
+          <label>Stroke <input type="number" id="shape-stroke" value="0" min="0" max="50" /></label>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-adjust">
+        <h3>Adjustments</h3>
+        <div class="adj-grid">
+          <label>Brightness <span id="v-bright">0</span><input type="range" id="adj-bright" min="-100" max="100" value="0" /></label>
+          <label>Contrast <span id="v-contrast">0</span><input type="range" id="adj-contrast" min="-100" max="100" value="0" /></label>
+          <label>Saturation <span id="v-sat">0</span><input type="range" id="adj-sat" min="-100" max="100" value="0" /></label>
+          <label>Hue <span id="v-hue">0</span><input type="range" id="adj-hue" min="-180" max="180" value="0" /></label>
+          <label>Exposure <span id="v-exp">0</span><input type="range" id="adj-exp" min="-100" max="100" value="0" /></label>
+          <label>Blur <span id="v-blur">0</span><input type="range" id="adj-blur" min="0" max="20" value="0" /></label>
+        </div>
+        <div class="row btns">
+          <button data-act="adj-apply">Apply</button>
+          <button data-act="adj-reset">Reset</button>
+          <button data-act="adj-auto">Auto-contrast</button>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-layers">
+        <h3>Layers <span id="layer-count"></span></h3>
+        <div class="layer-controls">
+          <label>Opacity <input type="range" id="layer-opacity" min="0" max="100" value="100" /></label>
+          <select id="layer-blend" title="Blend mode">
+            <option value="source-over">Normal</option>
+            <option value="multiply">Multiply</option>
+            <option value="screen">Screen</option>
+            <option value="overlay">Overlay</option>
+            <option value="darken">Darken</option>
+            <option value="lighten">Lighten</option>
+            <option value="color-dodge">Color-dodge</option>
+            <option value="color-burn">Color-burn</option>
+            <option value="hard-light">Hard-light</option>
+            <option value="soft-light">Soft-light</option>
+            <option value="difference">Difference</option>
+            <option value="exclusion">Exclusion</option>
+            <option value="hue">Hue</option>
+            <option value="saturation">Saturation</option>
+            <option value="color">Color</option>
+            <option value="luminosity">Luminosity</option>
+          </select>
+        </div>
+        <div id="layers"></div>
+        <div class="row btns">
+          <button data-act="layer-new" title="New layer">＋</button>
+          <button data-act="layer-dup" title="Duplicate">⧉</button>
+          <button data-act="layer-delete" title="Delete">🗑</button>
+          <button data-act="layer-up" title="Move up">▲</button>
+          <button data-act="layer-down" title="Move down">▼</button>
+          <button data-act="layer-merge" title="Merge down">⤓</button>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-history">
+        <h3>History</h3>
+        <div id="history"></div>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<!-- Modals -->
+<div id="modal-new" class="modal hidden">
+  <div class="sheet">
+    <h2>New document</h2>
+    <div class="presets">
+      <button data-preset="1920,1080">Full HD 1920×1080</button>
+      <button data-preset="1080,1080">Square 1080×1080</button>
+      <button data-preset="1080,1920">Story 1080×1920</button>
+      <button data-preset="800,600">Classic 800×600</button>
+    </div>
+    <div class="row"><label>Width</label><input id="new-w" type="number" value="1280" min="1" max="8000" /></div>
+    <div class="row"><label>Height</label><input id="new-h" type="number" value="800" min="1" max="8000" /></div>
+    <div class="row"><label>Background</label><select id="new-bg"><option value="white">White</option><option value="transparent">Transparent</option><option value="black">Black</option></select></div>
+    <div class="row btns"><button id="new-create" class="primary">Create</button><button id="new-cancel">Cancel</button></div>
+  </div>
+</div>
+
+<div id="modal-resize" class="modal hidden">
+  <div class="sheet">
+    <h2>Canvas size</h2>
+    <div class="row"><label>Width</label><input id="resize-w" type="number" value="1280" min="1" max="8000" /></div>
+    <div class="row"><label>Height</label><input id="resize-h" type="number" value="800" min="1" max="8000" /></div>
+    <div class="row"><label>Anchor</label><select id="resize-anchor">
+      <option value="center">Center</option><option value="top-left">Top-left</option>
+      <option value="top-right">Top-right</option><option value="bottom-left">Bottom-left</option><option value="bottom-right">Bottom-right</option>
+    </select></div>
+    <div class="row btns"><button id="resize-apply" class="primary">Apply</button><button id="resize-cancel">Cancel</button></div>
+  </div>
+</div>
+
+<input type="file" id="file-open" accept="image/*" class="hidden" />
+<input type="file" id="file-project" accept="application/json" class="hidden" />
+<div id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
